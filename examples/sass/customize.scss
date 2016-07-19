@@ -1,0 +1,126 @@
+body {
+  font-size: 14px;
+}
+
+//自定义向下滑动加载样式
+.rc-pull-container .pull {
+  display: block;
+}
+
+.rc-pull-container .release {
+  display: none;
+}
+
+.rc-pull-container.rc-pull-refresh .pull {
+  display: none;
+}
+
+.rc-pull-container.rc-pull-refresh .release {
+  display: block;
+}
+
+.refresh-icon {
+  position: relative;
+  top: -9px;
+  display: inline-block;
+  margin-right: 15px;
+  height: 8px;
+  width: 8px;
+}
+
+.refresh-icon:before {
+  content: '';
+  height: 8px;
+  width: 8px;
+  border: 2px solid #00C176;
+  border-left-width: 0;
+  border-bottom-width: 0;
+  transform: rotate(-45deg);
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.refresh-icon:after {
+  content: '';
+  height: 15px;
+  width: 2px;
+  background: #00C176;
+  position: absolute;
+  top: 5px;
+  left: 9px;
+}
+
+.rc-pull-refresh {
+  .refresh-icon {
+    top: -6px;
+  }
+  .refresh-icon:before {
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+    border-right-width: 0;
+    border-top-width: 0;
+  }
+  .refresh-icon:after {
+    top: 0;
+  }
+}
+
+//加载效果
+.refresh-loading:before,
+.refresh-loading:after,
+.refresh-loading {
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation-fill-mode: both;
+  animation: loading 1.8s infinite ease-in-out;
+  background-color: #00C176;
+}
+
+.refresh-loading {
+  display: inline-block;
+  margin-right: 30px;
+  position: relative;
+  text-indent: -9999em;
+  animation-delay: -0.16s;
+}
+
+.refresh-loading:before {
+  left: -15px;
+  animation-delay: -0.32s;
+}
+
+.refresh-loading:after {
+  left: 15px;
+}
+
+.refresh-loading:before,
+.refresh-loading:after {
+  content: '';
+  position: absolute;
+}
+
+@keyframes loading {
+  0%, 80%, 100% {
+    //box-shadow: 0 15px 0 -1.3em #00C176;
+    transform: scale(0.0);
+  }
+  40% {
+    //box-shadow: 0 15px 0 0 #00C176;
+    transform: scale(1.0);
+  }
+}
+
+.rc-pull-ptr {
+  color: #00C176;
+}
+
+//自定义滑动内容样式
+.rc-pull-content {
+  background: #fff;
+  padding: 20px 20px 300px;
+  text-align: center;
+  font-size: 20px;
+  color: #00C176;
+}

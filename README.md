@@ -10,6 +10,53 @@ npm install reactjs-pull-refresh --save
 
 ## Usage
 
+首先需要定制下拉样式，可参考例子中的实现。
+主要需要设置 rc-pull-ptr-icon 和 rc-pull-ptr-loading 的样式
+
+```javascript
+import React, {Component, PropTypes} from 'react';
+import {render} from 'react-dom';
+import PullRefresh from '../src/scripts/index';
+import './sass/simple.scss';
+
+class PullRefreshSimple extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.loadingFunction.bind(this);
+  }
+
+  loadingFunction() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const result = true;
+        if (result) {
+          resolve();
+        } else {
+          reject();
+        }
+      }, 500);
+    }).then(() => {
+      console.info('刷新成功！');
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <PullRefresh loadingFunction={this.loadingFunction}
+                     distanceToRefresh={40}>
+          <p>Pull down to refresh!</p>
+        </PullRefresh>
+      </div>
+    );
+  }
+}
+
+render(
+  <PullRefreshSimple />, document.getElementById('layout')
+);
+
+```
 
 ## Options
 

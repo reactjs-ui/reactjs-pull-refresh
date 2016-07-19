@@ -1,6 +1,6 @@
 {
   "name": "reactjs-pull-refresh",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Linder Wang",
     "email": "linder0209@126.com",
@@ -16,9 +16,9 @@
   "main": "dist/index.js",
   "scripts": {},
   "dependencies": {
-    "hammerjs": "^2.0.8",
     "react": "^15.2.1",
-    "react-dom": "^15.2.1"
+    "react-dom": "^15.2.1",
+    "react-hammerjs": "^0.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",

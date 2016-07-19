@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("react"));
+		module.exports = factory(require("react"), require("react-dom"));
 	else if(typeof define === 'function' && define.amd)
-		define(["react"], factory);
+		define(["react", "react-dom"], factory);
 	else if(typeof exports === 'object')
-		exports["reactPullRefresh"] = factory(require("react"));
+		exports["reactPullRefresh"] = factory(require("react"), require("react-dom"));
 	else
-		root["reactPullRefresh"] = factory(root["react"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_8__) {
+		root["reactPullRefresh"] = factory(root["react"], root["react-dom"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__, __WEBPACK_EXTERNAL_MODULE_10__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -62,27 +62,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "./";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 11);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-"use strict";
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _ReactPullRefresh = __webpack_require__(1);
-
-var _ReactPullRefresh2 = _interopRequireDefault(_ReactPullRefresh);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _ReactPullRefresh2.default;
+module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
 
 /***/ },
 /* 1 */
@@ -95,17 +82,42 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _ReactPullRefresh = __webpack_require__(2);
+
+var _ReactPullRefresh2 = _interopRequireDefault(_ReactPullRefresh);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _ReactPullRefresh2.default;
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(8);
+var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _WebPullToRefresh = __webpack_require__(2);
+var _reactHammerjs = __webpack_require__(7);
+
+var _reactHammerjs2 = _interopRequireDefault(_reactHammerjs);
+
+var _WebPullToRefresh = __webpack_require__(3);
 
 var _WebPullToRefresh2 = _interopRequireDefault(_WebPullToRefresh);
 
-__webpack_require__(7);
+__webpack_require__(9);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -121,6 +133,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * https://github.com/apeatling/web-pull-to-refresh
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * https://github.com/react-component/m-pull-to-refresh
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
+
+var emptyEvents = {
+  onPanStart: undefined,
+  onPan: undefined,
+  onPanEnd: undefined
+};
 
 var PullToRefresh = function (_Component) {
   _inherits(PullToRefresh, _Component);
@@ -147,8 +165,6 @@ var PullToRefresh = function (_Component) {
       var loadingFunction = _props.loadingFunction;
       var resistance = _props.resistance;
       var lockInTime = _props.lockInTime;
-      var hammerOptions = _props.hammerOptions;
-      var disabled = _props.disabled;
       var containerEl = _props.containerEl;
       var _refs = this.refs;
       var contentEl = _refs.contentEl;
@@ -164,9 +180,7 @@ var PullToRefresh = function (_Component) {
         distanceToRefresh: distanceToRefresh,
         loadingFunction: loadingFunction,
         resistance: resistance,
-        lockInTime: lockInTime,
-        hammerOptions: hammerOptions,
-        disabled: disabled
+        lockInTime: lockInTime
       });
     }
   }, {
@@ -178,10 +192,14 @@ var PullToRefresh = function (_Component) {
       var icon = _props2.icon;
       var loading = _props2.loading;
       var className = _props2.className;
+      var disabled = _props2.disabled;
       var style = _props2.style;
       var contentStyle = _props2.contentStyle;
       var contentClassName = _props2.contentClassName;
+      var hammerOptions = _props2.hammerOptions;
 
+
+      var events = disabled ? emptyEvents : this.webPullToRefresh.events;
 
       return _react2.default.createElement(
         'div',
@@ -201,9 +219,17 @@ var PullToRefresh = function (_Component) {
           )
         ),
         _react2.default.createElement(
-          'div',
-          { ref: 'contentEl', className: prefixCls + '-content ' + contentClassName, style: contentStyle },
-          children
+          _reactHammerjs2.default,
+          _extends({ direction: 'DIRECTION_ALL' }, events, { options: hammerOptions }),
+          _react2.default.createElement(
+            'div',
+            {
+              ref: 'contentEl',
+              className: prefixCls + '-content ' + contentClassName,
+              style: contentStyle
+            },
+            children
+          )
         )
       );
     }
@@ -237,8 +263,8 @@ PullToRefresh.defaultProps = {
 exports.default = PullToRefresh;
 
 /***/ },
-/* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/* 3 */
+/***/ function(module, exports) {
 
 "use strict";
 'use strict';
@@ -247,12 +273,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = WebPullToRefresh;
-
-var _hammerjs = __webpack_require__(5);
-
-var _hammerjs2 = _interopRequireDefault(_hammerjs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/**!
+ * 向下滑动加载功能类
+ * 参考
+ * https://github.com/apeatling/web-pull-to-refresh
+ * https://github.com/react-component/m-pull-to-refresh
+ *
+ */
 
 function WebPullToRefresh() {
   /**
@@ -263,7 +290,7 @@ function WebPullToRefresh() {
   var defaults = {
     // Number of pixels of panning until refresh
     // 设置刷新所需的滑动距离，单位为像素
-    distanceToRefresh: 70,
+    distanceToRefresh: 40,
 
     // Pointer to function that does the loading and returns a promise
     // 设置重新加载回调函数，这里可以处理加载数据等
@@ -319,8 +346,6 @@ function WebPullToRefresh() {
    */
   var init = function init() {
     var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    var hammerOptions = params.hammerOptions;
-    var disabled = params.disabled;
 
     options = {
       containerEl: params.containerEl,
@@ -341,37 +366,6 @@ function WebPullToRefresh() {
     containerEl = options.containerEl;
     containerClass = containerEl.classList;
     prefixCls = options.prefixCls;
-
-    //禁止滑动
-    if (disabled) {
-      return;
-    }
-    // 实例化 Hammer
-    var hammer = new _hammerjs2.default(options.contentEl);
-
-    hammer.get('pan').set({ direction: _hammerjs2.default.DIRECTION_VERTICAL });
-
-    if (hammerOptions) {
-      Object.keys(hammerOptions).forEach(function (option) {
-        if (option === 'recognizers') {
-          Object.keys(hammerOptions.recognizers).forEach(function (gesture) {
-            var recognizer = hammer.get(gesture);
-            recognizer.set(hammerOptions.recognizers[gesture]);
-          }, this);
-        } else {
-          var key = option;
-          var optionObj = {};
-          optionObj[key] = hammerOptions[option];
-          hammer.set(optionObj);
-        }
-      }, this);
-    }
-
-    //注册事件
-    hammer.on('panstart', onPanStart);
-    hammer.on('pandown', onPanDown);
-    hammer.on('panup', onPanUp);
-    hammer.on('panend', onPanEnd);
   };
 
   /**
@@ -519,33 +513,41 @@ function WebPullToRefresh() {
     containerEl.addEventListener('transitionend', bodyClassRemove, false);
   }
 
+  function onPan(e) {
+    if (e.additionalEvent === 'pandown') {
+      onPanDown(e);
+    }
+    if (e.additionalEvent === 'panup') {
+      onPanUp(e);
+    }
+  }
+
   return {
-    init: init
+    init: init,
+    events: {
+      onPanStart: onPanStart,
+      onPan: onPan,
+      onPanEnd: onPanEnd
+    }
   };
-} /**!
-   * 向下滑动加载功能类
-   * 参考
-   * https://github.com/apeatling/web-pull-to-refresh
-   * https://github.com/react-component/m-pull-to-refresh
-   *
-   */
+}
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)();
+exports = module.exports = __webpack_require__(5)();
 // imports
 
 
 // module
-exports.push([module.i, ".rc-pull-container {\n  position: relative;\n}\n\n.rc-pull-ptr {\n  position: absolute;\n  top: -40px;\n  left: 0;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  text-align: center;\n  height: 40px;\n}\n\n.rc-pull-ptr-icon {\n  position: relative;\n  top: 8px;\n  margin: 0 auto;\n  display: block;\n  height: 8px;\n  width: 8px;\n}\n\n.rc-pull-ptr-icon:before {\n  content: '';\n  height: 8px;\n  width: 8px;\n  border: 2px solid #d64f48;\n  border-left-width: 0;\n  border-bottom-width: 0;\n  -webkit-transform: rotate(-45deg);\n          transform: rotate(-45deg);\n  position: absolute;\n  top: 5px;\n  left: 5px;\n}\n\n.rc-pull-ptr-icon:after {\n  content: '';\n  height: 15px;\n  width: 2px;\n  background: #d64f48;\n  position: absolute;\n  top: 5px;\n  left: 9px;\n}\n\n.rc-pull-refresh .rc-pull-ptr-icon:before {\n  border-left-width: 2px;\n  border-bottom-width: 2px;\n  border-right-width: 0;\n  border-top-width: 0;\n}\n\n.rc-pull-refresh .rc-pull-ptr-icon:after {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-content {\n  -webkit-transform: translate3d(0, 50px, 0);\n          transform: translate3d(0, 50px, 0);\n}\n\n.rc-pull-ptr-loading:before,\n.rc-pull-ptr-loading:after,\n.rc-pull-ptr-loading {\n  border-radius: 50%;\n  width: 15px;\n  height: 15px;\n  -webkit-animation-fill-mode: both;\n          animation-fill-mode: both;\n  -webkit-animation: loading 1.8s infinite ease-in-out;\n          animation: loading 1.8s infinite ease-in-out;\n}\n\n.rc-pull-ptr-loading {\n  margin: 0 auto;\n  position: relative;\n  text-indent: -9999em;\n  -webkit-animation-delay: -0.16s;\n          animation-delay: -0.16s;\n  display: none;\n}\n\n.rc-pull-ptr-loading:before {\n  left: -20px;\n  -webkit-animation-delay: -0.32s;\n          animation-delay: -0.32s;\n}\n\n.rc-pull-ptr-loading:after {\n  left: 20px;\n}\n\n.rc-pull-ptr-loading:before,\n.rc-pull-ptr-loading:after {\n  content: '';\n  position: absolute;\n}\n\n@-webkit-keyframes loading {\n  0%, 80%, 100% {\n    box-shadow: 0 15px 0 -1.3em #d64f48;\n  }\n  40% {\n    box-shadow: 0 15px 0 0 #d64f48;\n  }\n}\n\n@keyframes loading {\n  0%, 80%, 100% {\n    box-shadow: 0 15px 0 -1.3em #d64f48;\n  }\n  40% {\n    box-shadow: 0 15px 0 0 #d64f48;\n  }\n}\n\n.rc-pull-loading .rc-pull-ptr-loading {\n  display: block;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-reset .rc-pull-ptr {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-loading .rc-pull-content,\n.rc-pull-reset .rc-pull-ptr,\n.rc-pull-reset .rc-pull-content {\n  -webkit-transition: all .25s ease;\n  transition: all .25s ease;\n}\n\n.rc-pull-loading .rc-pull-ptr-icon,\n.rc-pull-reset .rc-pull-ptr-icon {\n  display: none;\n}\n\n.rc-pull-reset .rc-pull-content {\n  -webkit-transform: translate3d(0, 0, 0);\n          transform: translate3d(0, 0, 0);\n}\n", ""]);
+exports.push([module.i, ".rc-pull-container {\n  position: relative;\n}\n\n.rc-pull-ptr {\n  position: absolute;\n  top: -40px;\n  left: 0;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  text-align: center;\n  height: 40px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.rc-pull-loading .rc-pull-content {\n  -webkit-transform: translate3d(0, 50px, 0);\n          transform: translate3d(0, 50px, 0);\n}\n\n.rc-pull-ptr-loading {\n  display: none;\n}\n\n.rc-pull-loading .rc-pull-ptr-loading {\n  display: block;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-reset .rc-pull-ptr {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-loading .rc-pull-content,\n.rc-pull-reset .rc-pull-ptr,\n.rc-pull-reset .rc-pull-content {\n  -webkit-transition: all .25s ease;\n  transition: all .25s ease;\n}\n\n.rc-pull-loading .rc-pull-ptr-icon,\n.rc-pull-reset .rc-pull-ptr-icon {\n  display: none;\n}\n\n.rc-pull-reset .rc-pull-content {\n  -webkit-transform: translate3d(0, 0, 0);\n          transform: translate3d(0, 0, 0);\n}\n", ""]);
 
 // exports
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 /*
@@ -601,7 +603,7 @@ module.exports = function() {
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
@@ -3250,7 +3252,148 @@ if (true) {
 
 
 /***/ },
-/* 6 */
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+var React = __webpack_require__(0);
+var ReactDOM = __webpack_require__(10);
+
+// require('hammerjs') when in a browser. This is safe because Hammer is only
+// invoked in componentDidMount, which is not executed on the server.
+var Hammer = (typeof window !== 'undefined') ? __webpack_require__(6) : undefined;
+
+var privateProps = {
+	children: true,
+	direction: true,
+	options: true,
+	recognizeWith: true,
+	vertical: true,
+};
+
+/**
+ * Hammer Component
+ * ================
+ */
+
+var handlerToEvent = {
+	action: 'tap press',
+	onDoubleTap: 'doubletap',
+	onPan: 'pan',
+	onPanCancel: 'pancancel',
+	onPanEnd: 'panend',
+	onPanStart: 'panstart',
+	onPinch: 'pinch',
+	onPinchCancel: 'pinchcancel',
+	onPinchEnd: 'pinchend',
+	onPinchIn: 'pinchin',
+	onPinchOut: 'pinchout',
+	onPinchStart: 'pinchstart',
+	onPress: 'press',
+	onPressUp: 'pressup',
+	onRotate: 'rotate',
+	onRotateCancel: 'rotatecancel',
+	onRotateEnd: 'rotateend',
+	onRotateMove: 'rotatemove',
+	onRotateStart: 'rotatestart',
+	onSwipe: 'swipe',
+	onTap: 'tap',
+};
+
+Object.keys(handlerToEvent).forEach(function (i) {
+	privateProps[i] = true;
+});
+
+function updateHammer (hammer, props) {
+	if (props.hasOwnProperty('vertical')) {
+		console.warn('vertical is deprecated, please use `direction` instead');
+	}
+
+	var directionProp = props.direction;
+	if (directionProp || props.hasOwnProperty('vertical')) {
+		direction = directionProp ? directionProp : (props.vertical ? 'DIRECTION_ALL' : 'DIRECTION_HORIZONTAL');
+		hammer.get('pan').set({ direction: Hammer[direction] });
+		hammer.get('swipe').set({ direction: Hammer[direction] });
+	}
+
+	if (props.options) {
+		Object.keys(props.options).forEach(function (option) {
+			if (option === 'recognizers') {
+				Object.keys(props.options.recognizers).forEach(function (gesture) {
+					var recognizer = hammer.get(gesture);
+					recognizer.set(props.options.recognizers[gesture]);
+				}, this);
+			} else {
+				var key = option;
+				var optionObj = {};
+				optionObj[key] = props.options[option];
+				hammer.set(optionObj);
+			}
+		}, this);
+	}
+
+	if (props.recognizeWith) {
+		Object.keys(props.recognizeWith).forEach(function (gesture) {
+			var recognizer = hammer.get(gesture);
+			recognizer.recognizeWith(props.recognizeWith[gesture]);
+		}, this);
+	}
+
+	Object.keys(props).forEach(function (p) {
+		var e = handlerToEvent[p];
+		if (e) {
+			hammer.off(e);
+			hammer.on(e, props[p]);
+		}
+	});
+}
+
+var HammerComponent = React.createClass({
+
+	displayName: 'Hammer',
+
+	propTypes: {
+		className: React.PropTypes.string,
+	},
+
+	componentDidMount: function () {
+		this.hammer = new Hammer(ReactDOM.findDOMNode(this));
+		updateHammer(this.hammer, this.props);
+	},
+
+	componentDidUpdate: function () {
+		if (this.hammer) {
+			updateHammer(this.hammer, this.props);
+		}
+	},
+
+	componentWillUnmount: function () {
+		if (this.hammer) {
+			this.hammer.stop();
+			this.hammer.destroy();
+		}
+		this.hammer = null;
+	},
+
+	render: function () {
+		var props = {};
+
+		Object.keys(this.props).forEach(function (i) {
+			if (!privateProps[i]) {
+				props[i] = this.props[i];
+			}
+		}, this);
+
+		// Reuse the child provided
+		// This makes it flexible to use whatever element is wanted (div, ul, etc)
+		return React.cloneElement(React.Children.only(this.props.children), props);
+	}
+});
+
+module.exports = HammerComponent;
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 /*
@@ -3502,16 +3645,16 @@ function updateLink(linkElement, obj) {
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(3);
+var content = __webpack_require__(4);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(6)(content, {});
+var update = __webpack_require__(8)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -3528,16 +3671,16 @@ if(false) {
 }
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_10__;
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+module.exports = __webpack_require__(1);
 
 
 /***/ }

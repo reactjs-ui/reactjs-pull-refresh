@@ -8,8 +8,15 @@
  */
 
 import React, {PropTypes, Component} from 'react';
+import Hammer from 'react-hammerjs';
 import WebPullToRefresh from './WebPullToRefresh';
 import '../sass/pull-refresh.scss';
+
+const emptyEvents = {
+  onPanStart: undefined,
+  onPan: undefined,
+  onPanEnd: undefined,
+};
 
 class PullToRefresh extends Component {
   //可能需要传入的参数
@@ -45,7 +52,7 @@ class PullToRefresh extends Component {
   componentDidMount() {
     const {
       prefixCls, distanceToRefresh, loadingFunction,
-      resistance, lockInTime, hammerOptions, disabled, containerEl
+      resistance, lockInTime, containerEl
     } = this.props;
     const {contentEl, ptrEl, container} = this.refs;
     //初始化 web pull to Refresh
@@ -58,16 +65,16 @@ class PullToRefresh extends Component {
       loadingFunction,
       resistance,
       lockInTime,
-      hammerOptions,
-      disabled
     });
   }
 
   render() {
     const {
-      prefixCls, children, icon, loading, className,
-      style, contentStyle, contentClassName,
+      prefixCls, children, icon, loading, className, disabled,
+      style, contentStyle, contentClassName, hammerOptions
     } = this.props;
+
+    const events = disabled ? emptyEvents : this.webPullToRefresh.events;
 
     return (
       <div className={`${className} ${prefixCls}-container`} style={style} ref="container">
@@ -76,9 +83,15 @@ class PullToRefresh extends Component {
           <div className={`${prefixCls}-ptr-loading`}>{loading}</div>
         </div>
 
-        <div ref="contentEl" className={`${prefixCls}-content ${contentClassName}`} style={contentStyle}>
-          {children}
-        </div>
+        <Hammer direction="DIRECTION_ALL" {...events} options={hammerOptions}>
+          <div
+            ref="contentEl"
+            className={`${prefixCls}-content ${contentClassName}`}
+            style={contentStyle}
+          >
+            {children}
+          </div>
+        </Hammer>
       </div>
     );
   }

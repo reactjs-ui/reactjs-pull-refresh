@@ -1,0 +1,102 @@
+body {
+  font-size: 14px;
+}
+
+//自定义向下滑动加载样式
+//加载前图标
+.rc-pull-ptr-icon {
+  position: relative;
+  top: 8px;
+  margin: 0 auto;
+  display: block;
+  height: 8px;
+  width: 8px;
+}
+
+.rc-pull-ptr-icon:before {
+  content: '';
+  height: 8px;
+  width: 8px;
+  border: 2px solid #d64f48;
+  border-left-width: 0;
+  border-bottom-width: 0;
+  transform: rotate(-45deg);
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+
+.rc-pull-ptr-icon:after {
+  content: '';
+  height: 15px;
+  width: 2px;
+  background: #d64f48;
+  position: absolute;
+  top: 5px;
+  left: 9px;
+}
+
+// 刷新时， 图标的样式
+// .rc-pull-refresh 是定义在 container 上的样式
+.rc-pull-refresh {
+  .rc-pull-ptr-icon:before {
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+    border-right-width: 0;
+    border-top-width: 0;
+  }
+  .rc-pull-ptr-icon:after {
+    top: 0;
+  }
+}
+
+//加载效果
+.rc-pull-ptr-loading:before,
+.rc-pull-ptr-loading:after,
+.rc-pull-ptr-loading {
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  animation-fill-mode: both;
+  animation: loading 1.8s infinite ease-in-out;
+}
+
+.rc-pull-ptr-loading {
+  margin: 0 auto;
+  position: relative;
+  text-indent: -9999em;
+  animation-delay: -0.16s;
+}
+
+.rc-pull-ptr-loading:before {
+  left: -20px;
+  animation-delay: -0.32s;
+}
+
+.rc-pull-ptr-loading:after {
+  left: 20px;
+}
+
+.rc-pull-ptr-loading:before,
+.rc-pull-ptr-loading:after {
+  content: '';
+  position: absolute;
+}
+
+@keyframes loading {
+  0%, 80%, 100% {
+    box-shadow: 0 15px 0 -1.3em #d64f48;
+  }
+  40% {
+    box-shadow: 0 15px 0 0 #d64f48;
+  }
+}
+
+//自定义滑动内容样式
+.rc-pull-content {
+  background: #fff;
+  padding: 20px 20px 300px;
+  text-align: center;
+  font-size: 20px;
+  color: #d64f48;
+}

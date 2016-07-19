@@ -6,8 +6,6 @@
  *
  */
 
-import Hammer from 'hammerjs';
-
 export default function WebPullToRefresh() {
   /**
    * 默认选项
@@ -17,7 +15,7 @@ export default function WebPullToRefresh() {
   const defaults = {
     // Number of pixels of panning until refresh
     // 设置刷新所需的滑动距离，单位为像素
-    distanceToRefresh: 70,
+    distanceToRefresh: 40,
 
     // Pointer to function that does the loading and returns a promise
     // 设置重新加载回调函数，这里可以处理加载数据等
@@ -72,7 +70,6 @@ export default function WebPullToRefresh() {
    * @param {object=} params - Setup parameters for pull to refresh
    */
   const init = function (params = {}) {
-    const {hammerOptions, disabled} = params;
     options = {
       containerEl: params.containerEl,
       contentEl: params.contentEl,
@@ -93,36 +90,6 @@ export default function WebPullToRefresh() {
     containerClass = containerEl.classList;
     prefixCls = options.prefixCls;
 
-    //禁止滑动
-    if (disabled) {
-      return;
-    }
-    // 实例化 Hammer
-    const hammer = new Hammer(options.contentEl);
-
-    hammer.get('pan').set({direction: Hammer.DIRECTION_VERTICAL});
-
-    if (hammerOptions) {
-      Object.keys(hammerOptions).forEach(function (option) {
-        if (option === 'recognizers') {
-          Object.keys(hammerOptions.recognizers).forEach((gesture) => {
-            const recognizer = hammer.get(gesture);
-            recognizer.set(hammerOptions.recognizers[gesture]);
-          }, this);
-        } else {
-          const key = option;
-          const optionObj = {};
-          optionObj[key] = hammerOptions[option];
-          hammer.set(optionObj);
-        }
-      }, this);
-    }
-
-    //注册事件
-    hammer.on('panstart', onPanStart);
-    hammer.on('pandown', onPanDown);
-    hammer.on('panup', onPanUp);
-    hammer.on('panend', onPanEnd);
   };
 
   /**
@@ -271,7 +238,21 @@ export default function WebPullToRefresh() {
     containerEl.addEventListener('transitionend', bodyClassRemove, false);
   }
 
+  function onPan(e) {
+    if (e.additionalEvent === 'pandown') {
+      onPanDown(e);
+    }
+    if (e.additionalEvent === 'panup') {
+      onPanUp(e);
+    }
+  }
+
   return {
-    init
+    init,
+    events: {
+      onPanStart,
+      onPan,
+      onPanEnd,
+    },
   };
 }

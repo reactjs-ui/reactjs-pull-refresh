@@ -60,6 +60,7 @@ let webpackConfig = {
   entry: {
     index: ['./examples/index.js', webpackDevServer, hotDevServer],
     simple: ['./examples/simple.js', webpackDevServer, hotDevServer],
+    customize: ['./examples/customize.js', webpackDevServer, hotDevServer],
   },
 
   // 出口 让webpack把处理完成的文件放在哪里
@@ -111,7 +112,10 @@ const htmlwebpackPluginConfig = {
   },
   simple: {
     title: '基本用法'
-  }
+  },
+  customize: {
+    title: '定制化加载效果'
+  },
 };
 
 for (let key in entry) {
