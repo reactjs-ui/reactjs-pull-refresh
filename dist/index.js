@@ -299,7 +299,7 @@ function WebPullToRefresh() {
   var defaults = {
     // Number of pixels of panning until refresh
     // 设置刷新所需的滑动距离，单位为像素
-    distanceToRefresh: 40,
+    gi: 40,
 
     // Pointer to function that does the loading and returns a promise
     // 设置重新加载回调函数，这里可以处理加载数据等
@@ -557,7 +557,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, ".rc-pull-container {\n  position: relative;\n  overflow: hidden;\n}\n\n.rc-pull-ptr {\n  position: absolute;\n  top: -40px;\n  left: 0;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  text-align: center;\n  height: 40px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.rc-pull-loading .rc-pull-content {\n  -webkit-transform: translate3d(0, 50px, 0);\n          transform: translate3d(0, 50px, 0);\n}\n\n.rc-pull-ptr-loading {\n  display: none;\n}\n\n.rc-pull-loading .rc-pull-ptr-loading {\n  display: block;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-reset .rc-pull-ptr {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-loading .rc-pull-content,\n.rc-pull-reset .rc-pull-ptr,\n.rc-pull-reset .rc-pull-content {\n  -webkit-transition: all .25s ease;\n  transition: all .25s ease;\n}\n\n.rc-pull-loading .rc-pull-ptr-icon,\n.rc-pull-reset .rc-pull-ptr-icon {\n  display: none;\n}\n\n.rc-pull-reset .rc-pull-content {\n  -webkit-transform: translate3d(0, 0, 0);\n          transform: translate3d(0, 0, 0);\n}\n", ""]);
+exports.push([module.i, ".rc-pull-container {\n  position: relative;\n}\n\n.rc-pull-ptr {\n  position: absolute;\n  top: -40px;\n  left: 0;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  text-align: center;\n  height: 40px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.rc-pull-loading .rc-pull-content {\n  -webkit-transform: translate3d(0, 50px, 0);\n          transform: translate3d(0, 50px, 0);\n}\n\n.rc-pull-ptr-loading {\n  display: none;\n}\n\n.rc-pull-loading .rc-pull-ptr-loading {\n  display: block;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-reset .rc-pull-ptr {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-loading .rc-pull-content,\n.rc-pull-reset .rc-pull-ptr,\n.rc-pull-reset .rc-pull-content {\n  -webkit-transition: all .25s ease;\n  transition: all .25s ease;\n}\n\n.rc-pull-loading .rc-pull-ptr-icon,\n.rc-pull-reset .rc-pull-ptr-icon {\n  display: none;\n}\n\n.rc-pull-reset .rc-pull-content {\n  -webkit-transform: translate3d(0, 0, 0);\n          transform: translate3d(0, 0, 0);\n}\n", ""]);
 
 // exports
 
