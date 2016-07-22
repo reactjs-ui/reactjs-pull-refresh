@@ -15,7 +15,7 @@ export default function WebPullToRefresh() {
   const defaults = {
     // Number of pixels of panning until refresh
     // 设置刷新所需的滑动距离，单位为像素
-    distanceToRefresh: 40,
+    gi: 40,
 
     // Pointer to function that does the loading and returns a promise
     // 设置重新加载回调函数，这里可以处理加载数据等
@@ -42,6 +42,8 @@ export default function WebPullToRefresh() {
    * @param resistance 拖拽阻力系数，设置大于1表示实际拖拽效果变得缓慢，设置小于1，则加速拖拽效果
    * @param lockInTime 设置刷新完一次，等待的事件，默认为1秒
    * @param prefixCls 默认样式前缀
+   * @param onPanStart 自定义 panStart 函数，如果返回 false，则禁止滑动
+   * @param onPanEnd 自定义 panEnd 函数
    * @type {object}
    */
   let options = {};
@@ -71,9 +73,7 @@ export default function WebPullToRefresh() {
    */
   const init = function (params = {}) {
     options = {
-      containerEl: params.containerEl,
-      contentEl: params.contentEl,
-      ptrEl: params.ptrEl,
+      ...params,
       distanceToRefresh: params.distanceToRefresh || defaults.distanceToRefresh,
       loadingFunction: params.loadingFunction || defaults.loadingFunction,
       resistance: params.resistance || defaults.resistance,
@@ -103,10 +103,13 @@ export default function WebPullToRefresh() {
       pan.enabled = false;
       return;
     }
+    if (options.onPanStart && typeof (options.onPanStart) === 'function') {
+      if (options.onPanStart() === false) {//如果回调函数返回 false 则禁止滑动
+        return;
+      }
+    }
 
-    e.preventDefault();
     pan.startingPositionY = containerEl.scrollTop;
-
     if (pan.startingPositionY === 0) {
       pan.enabled = true;
     }
@@ -183,6 +186,10 @@ export default function WebPullToRefresh() {
     }
 
     e.preventDefault();
+
+    if (options.onPanEnd && typeof (options.onPanEnd) === 'function') {
+      options.onPanEnd();
+    }
 
     options.contentEl.style.transform = options.contentEl.style.webkitTransform = '';
     options.ptrEl.style.transform = options.ptrEl.style.webkitTransform = '';

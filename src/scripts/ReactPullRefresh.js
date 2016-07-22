@@ -36,13 +36,15 @@ class PullToRefresh extends Component {
     hammerOptions: PropTypes.object, // hammer 组件选项
     lockInTime: PropTypes.number, // 设置刷新完一次，等待的事件，默认为1秒
     containerEl: PropTypes.element, // 渲染组件容器，可设为 document.body 等
+    onPanStart: PropTypes.func, // 自定义 panStart 函数，如果返回 false，则禁止滑动
+    onPanEnd: PropTypes.func, // 自定义 panEnd 函数
   };
 
   static defaultProps = {
     prefixCls: 'rc-pull',
     className: '',
     contentClassName: '',
-    hammerOptions: {},
+    hammerOptions: {touchAction: 'auto'},
   };
 
   componentWillMount() {
@@ -52,7 +54,7 @@ class PullToRefresh extends Component {
   componentDidMount() {
     const {
       prefixCls, distanceToRefresh, loadingFunction,
-      resistance, lockInTime, containerEl
+      resistance, lockInTime, containerEl, onPanStart, onPanEnd
     } = this.props;
     const {contentEl, ptrEl, container} = this.refs;
     //初始化 web pull to Refresh
@@ -65,6 +67,8 @@ class PullToRefresh extends Component {
       loadingFunction,
       resistance,
       lockInTime,
+      onPanStart,
+      onPanEnd
     });
   }
 

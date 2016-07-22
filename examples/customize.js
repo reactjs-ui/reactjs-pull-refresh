@@ -41,14 +41,12 @@ class PullRefreshCustomize extends Component {
       </div>
     );
     return (
-      <div>
-        <PullRefresh loadingFunction={this.loadingFunction}
-                     distanceToRefresh={40}
-                     icon={icon}
-                     loading={loading}>
-          Pull down to refresh!
-        </PullRefresh>
-      </div>
+      <PullRefresh loadingFunction={this.loadingFunction}
+                   distanceToRefresh={40}
+                   icon={icon}
+                   loading={loading}>
+        Pull down to refresh!
+      </PullRefresh>
     );
   }
 }

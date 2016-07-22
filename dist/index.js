@@ -166,6 +166,8 @@ var PullToRefresh = function (_Component) {
       var resistance = _props.resistance;
       var lockInTime = _props.lockInTime;
       var containerEl = _props.containerEl;
+      var onPanStart = _props.onPanStart;
+      var onPanEnd = _props.onPanEnd;
       var _refs = this.refs;
       var contentEl = _refs.contentEl;
       var ptrEl = _refs.ptrEl;
@@ -180,7 +182,9 @@ var PullToRefresh = function (_Component) {
         distanceToRefresh: distanceToRefresh,
         loadingFunction: loadingFunction,
         resistance: resistance,
-        lockInTime: lockInTime
+        lockInTime: lockInTime,
+        onPanStart: onPanStart,
+        onPanEnd: onPanEnd
       });
     }
   }, {
@@ -253,12 +257,14 @@ PullToRefresh.propTypes = {
   children: _react.PropTypes.any, // 呈现的子元素
   hammerOptions: _react.PropTypes.object, // hammer 组件选项
   lockInTime: _react.PropTypes.number, // 设置刷新完一次，等待的事件，默认为1秒
-  containerEl: _react.PropTypes.element };
+  containerEl: _react.PropTypes.element, // 渲染组件容器，可设为 document.body 等
+  onPanStart: _react.PropTypes.func, // 自定义 panStart 函数，如果返回 false，则禁止滑动
+  onPanEnd: _react.PropTypes.func };
 PullToRefresh.defaultProps = {
   prefixCls: 'rc-pull',
   className: '',
   contentClassName: '',
-  hammerOptions: {}
+  hammerOptions: { touchAction: 'auto' }
 };
 exports.default = PullToRefresh;
 
@@ -272,6 +278,9 @@ exports.default = PullToRefresh;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 exports.default = WebPullToRefresh;
 /**!
  * 向下滑动加载功能类
@@ -317,6 +326,8 @@ function WebPullToRefresh() {
    * @param resistance 拖拽阻力系数，设置大于1表示实际拖拽效果变得缓慢，设置小于1，则加速拖拽效果
    * @param lockInTime 设置刷新完一次，等待的事件，默认为1秒
    * @param prefixCls 默认样式前缀
+   * @param onPanStart 自定义 panStart 函数，如果返回 false，则禁止滑动
+   * @param onPanEnd 自定义 panEnd 函数
    * @type {object}
    */
   var options = {};
@@ -347,16 +358,13 @@ function WebPullToRefresh() {
   var init = function init() {
     var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-    options = {
-      containerEl: params.containerEl,
-      contentEl: params.contentEl,
-      ptrEl: params.ptrEl,
+    options = _extends({}, params, {
       distanceToRefresh: params.distanceToRefresh || defaults.distanceToRefresh,
       loadingFunction: params.loadingFunction || defaults.loadingFunction,
       resistance: params.resistance || defaults.resistance,
       lockInTime: params.lockInTime || defaults.lockInTime,
       prefixCls: params.prefixCls || defaults.prefixCls
-    };
+    });
 
     if (!options.containerEl || !options.contentEl || !options.ptrEl) {
       return false;
@@ -379,10 +387,14 @@ function WebPullToRefresh() {
       pan.enabled = false;
       return;
     }
+    if (options.onPanStart && typeof options.onPanStart === 'function') {
+      if (options.onPanStart() === false) {
+        //如果回调函数返回 false 则禁止滑动
+        return;
+      }
+    }
 
-    e.preventDefault();
     pan.startingPositionY = containerEl.scrollTop;
-
     if (pan.startingPositionY === 0) {
       pan.enabled = true;
     }
@@ -459,6 +471,10 @@ function WebPullToRefresh() {
     }
 
     e.preventDefault();
+
+    if (options.onPanEnd && typeof options.onPanEnd === 'function') {
+      options.onPanEnd();
+    }
 
     options.contentEl.style.transform = options.contentEl.style.webkitTransform = '';
     options.ptrEl.style.transform = options.ptrEl.style.webkitTransform = '';
@@ -541,7 +557,7 @@ exports = module.exports = __webpack_require__(5)();
 
 
 // module
-exports.push([module.i, ".rc-pull-container {\n  position: relative;\n}\n\n.rc-pull-ptr {\n  position: absolute;\n  top: -40px;\n  left: 0;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  text-align: center;\n  height: 40px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.rc-pull-loading .rc-pull-content {\n  -webkit-transform: translate3d(0, 50px, 0);\n          transform: translate3d(0, 50px, 0);\n}\n\n.rc-pull-ptr-loading {\n  display: none;\n}\n\n.rc-pull-loading .rc-pull-ptr-loading {\n  display: block;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-reset .rc-pull-ptr {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-loading .rc-pull-content,\n.rc-pull-reset .rc-pull-ptr,\n.rc-pull-reset .rc-pull-content {\n  -webkit-transition: all .25s ease;\n  transition: all .25s ease;\n}\n\n.rc-pull-loading .rc-pull-ptr-icon,\n.rc-pull-reset .rc-pull-ptr-icon {\n  display: none;\n}\n\n.rc-pull-reset .rc-pull-content {\n  -webkit-transform: translate3d(0, 0, 0);\n          transform: translate3d(0, 0, 0);\n}\n", ""]);
+exports.push([module.i, ".rc-pull-container {\n  position: relative;\n  overflow: hidden;\n}\n\n.rc-pull-ptr {\n  position: absolute;\n  top: -40px;\n  left: 0;\n  width: 100%;\n  color: #fff;\n  z-index: 10;\n  text-align: center;\n  height: 40px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.rc-pull-loading .rc-pull-content {\n  -webkit-transform: translate3d(0, 50px, 0);\n          transform: translate3d(0, 50px, 0);\n}\n\n.rc-pull-ptr-loading {\n  display: none;\n}\n\n.rc-pull-loading .rc-pull-ptr-loading {\n  display: block;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-reset .rc-pull-ptr {\n  top: 0;\n}\n\n.rc-pull-loading .rc-pull-ptr,\n.rc-pull-loading .rc-pull-content,\n.rc-pull-reset .rc-pull-ptr,\n.rc-pull-reset .rc-pull-content {\n  -webkit-transition: all .25s ease;\n  transition: all .25s ease;\n}\n\n.rc-pull-loading .rc-pull-ptr-icon,\n.rc-pull-reset .rc-pull-ptr-icon {\n  display: none;\n}\n\n.rc-pull-reset .rc-pull-content {\n  -webkit-transform: translate3d(0, 0, 0);\n          transform: translate3d(0, 0, 0);\n}\n", ""]);
 
 // exports
 
