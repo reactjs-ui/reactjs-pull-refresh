@@ -15,7 +15,7 @@ export default function WebPullToRefresh() {
   const defaults = {
     // Number of pixels of panning until refresh
     // 设置刷新所需的滑动距离，单位为像素
-    gi: 40,
+    distanceToRefresh: 40,
 
     // Pointer to function that does the loading and returns a promise
     // 设置重新加载回调函数，这里可以处理加载数据等
