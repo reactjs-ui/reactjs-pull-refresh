@@ -241,7 +241,7 @@
     "react/prop-types": 2, //对于没有设置 propType 的 prop 给出警告
     "react/react-in-jsx-scope": 2, //对于使用了 JSX,要使用 React 组件
     "react/require-extension": 2, //引入的 js 或 jsx 文件是否去掉后缀
-    "react/self-closing-comp": 2, //对于没有子元素的组件应该是这样的 <Hello name="John" /> 而不应该 <Hello name="John"></Hello>
+    //"react/self-closing-comp": 2, //对于没有子元素的组件应该是这样的 <Hello name="John" /> 而不应该 <Hello name="John"></Hello>
     "react/sort-comp": 2, //组件方法是否按一定的顺序书写,默认为: 1  static methods and properties 2 lifecycle methods: displayName, propTypes, contextTypes, childContextTypes, mixins, statics,defaultProps, constructor, getDefaultProps, getInitialState, state, getChildContext, componentWillMount, componentDidMount, componentWillReceiveProps, shouldComponentUpdate, componentWillUpdate, componentDidUpdate, componentWillUnmount (in this order).  3 custom methods 4 render method
     //"react/sort-prop-types": 2, //propType 是否按字母顺序来排列
     "react/wrap-multilines": 2, // 对于多行 jsx, 应该用()包裹一下

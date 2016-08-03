@@ -28,7 +28,7 @@ class ReactPullRefresh extends Component {
     //初始化 Scroll 实例
     const {container, ptrEl, scrollComponent, moreEl} = this.refs;
     const {refreshCallback, loadMoreCallback, hasMore, maxAmplitude, loadMoreThrottle} = this.props;
-    this.pullToRefresh = new PullRefresh({
+    this.pullRefresh = new PullRefresh({
       container,
       ptrEl,
       moreEl,
@@ -43,11 +43,11 @@ class ReactPullRefresh extends Component {
 
   componentDidUpdate() {
     const {hasMore} = this.props;
-    this.pullToRefresh.setMoreStatus(hasMore);
+    this.pullRefresh.setMoreStatus(hasMore);
   }
 
   componentWillUnmount() {
-    this.pullToRefresh.unmount(true);
+    this.pullRefresh.unmount(true);
   }
 
   render() {

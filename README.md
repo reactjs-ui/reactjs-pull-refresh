@@ -37,6 +37,7 @@ vim README.md
 //输入一些内容
 git add README.md
 git commit -m "README.md"
+git push
 git checkout master
 ```
 

@@ -16,7 +16,7 @@ class PullRefresh {
       }
     });
 
-    this.options = {...PullToRefresh.defaultOptions, ..._options};
+    this.options = {...PullRefresh.defaultOptions, ..._options};
     const {container, ptrEl, moreEl, scrollComponent, hasMore} = _options;
     this.container = container;
     this.ptrEl = ptrEl;

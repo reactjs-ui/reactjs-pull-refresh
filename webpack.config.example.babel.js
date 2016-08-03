@@ -4,7 +4,7 @@ import HtmlwebpackPlugin from 'html-webpack-plugin';
 import precss from 'precss';
 import autoprefixer from 'autoprefixer';
 
-const ip = '10.13.83.83';
+const ip = 'localhost';
 const port = 9090;
 const hotDevServer = 'webpack/hot/dev-server';
 // https://github.com/webpack/webpack-dev-server
@@ -37,7 +37,6 @@ let webpackConfig = {
       poll: 1000
     },
     quiet: false, // 设为true，不把任何信息输出到控制台
-    publicPath: '/'
   },
 
   postcss () {
@@ -60,7 +59,6 @@ let webpackConfig = {
   entry: {
     index: ['./examples/index.js', webpackDevServer, hotDevServer],
     simple: ['./examples/simple.js', webpackDevServer, hotDevServer],
-    customize: ['./examples/customize.js', webpackDevServer, hotDevServer],
   },
 
   // 出口 让webpack把处理完成的文件放在哪里
@@ -112,10 +110,7 @@ const htmlwebpackPluginConfig = {
   },
   simple: {
     title: '基本用法'
-  },
-  customize: {
-    title: '定制化加载效果'
-  },
+  }
 };
 
 for (let key in entry) {
