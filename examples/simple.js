@@ -1,70 +1,107 @@
 import React, {Component, PropTypes} from 'react';
 import {render} from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import PullRefresh from '../src/scripts/index';
-import './sass/simple.scss';
+import './sass/example.scss';
+
+// 初始化 tapEvent 事件, 移动端
+injectTapEventPlugin();
 
 class PullRefreshSimple extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.loadingFunction.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: 20,
+      hasMore: true
+    };
+    this.refreshCallback = this.refreshCallback.bind(this);
+    this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.ceshiTouchTap = this.ceshiTouchTap.bind(this);
   }
 
-  loadingFunction() {
+  refreshCallback() {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const result = true;
+        let result = false;
+        if (Math.random() > 0.2) {
+          result = true;
+        }
         if (result) {
-          resolve();
+          this.setState({
+            items: 20,
+            hasMore: true
+          }, () => {
+            resolve();
+          });
         } else {
           reject();
         }
-      }, 500);
+      }, 1000);
     }).then(() => {
       console.info('刷新成功！');
+    }, () => {
+      console.info('刷新失败！');
     });
   }
 
-  render() {
-    const hammerOptions = {
-      touchAction: 'auto',
-      recognizers: {
-        pan: {
-          threshold: 50
+  loadMoreCallback() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let result = false;
+        if (Math.random() > 0.2) {
+          result = true;
         }
+        if (result) {
+          this.setState({
+            items: this.state.items + 10,
+            hasMore: this.state.items <= 40
+          }, () => {
+            resolve();
+          });
+        } else {
+          reject();
+        }
+      }, 1000);
+    }).then(() => {
+      console.info('加载更多成功！');
+    }, () => {
+      console.info('加载更多失败！');
+    });
+  }
+
+  ceshiTouchTap(e) {
+    console.info('测试下拉刷新插件是否与 Tap 事件冲突');
+  }
+
+  render() {
+    let contents = [];
+    const {items, hasMore} = this.state;
+
+    for (let i = items; i > 0; i--) {
+      if (i < 10) {
+        contents.push(<li key={i}><a href="http://www.sina.com">这里放置真实显示的DOM内容</a> {i}</li>);
+      } else {
+        contents.push(<li key={i} onTouchTap={this.ceshiTouchTap}>这里放置真实显示的DOM内容 {i}</li>);
       }
+    }
+
+    const props = {
+      maxAmplitude: 80,
+      debounceTime: 30,
+      throttleTime: 100,
+      deceleration: 0.001,
+      refreshCallback: this.refreshCallback,
+      loadMoreCallback: this.loadMoreCallback,
+      hasMore
     };
 
     return (
-      <PullRefresh loadingFunction={this.loadingFunction}
-                   distanceToRefresh={40}
-                   hammerOptions={hammerOptions}>
-        <p>Pull down to refresh! You need pull over 50px to refresh.</p>
-        <p>The details you see hammerOptions.</p>
-
-        <h3>Content</h3>
-        <p>
-          It’s easy to use, just include the library and create a new instance.
-
-By default it adds a set of tap, doubletap, press, horizontal pan and swipe, and the multi-touch pinch and rotate recognizers.
-The pinch and rotate recognizers are disabled by default because they would make the element blocking, but you can enable them by calling:
-
-Enabling vertical or all directions for the pan and swipe recognizers:
-Also the viewport meta tag is recommended, it gives more control back to the webpage by disabling the doubletap/pinch zoom.
-More recent browsers that support the touch-action property don’t require this.
-
-            More control
-            You can setup your own set of recognizers for your instance.
-            This requires a bit more code, but it gives you more control about the gestures that are being recognized.
-
-The example above creates an instance containing a pan and a quadrupletap gesture.
-The recognizer instances you create are being executed in the order they are added, and only one can be recognized at the time.
-
-See the pages about the recognizeWith and requireFailure for more details.
-
-Notes
-Built by Jorik Tangelder. It’s recommended to listen to this loop while using hammer.js.
-Follow @jorikdelaporik for some tweets about this library.
-        </p>
+      <PullRefresh {...props}>
+        <ol className="example-list">
+          {contents.map((item) => {
+            return item;
+          })}
+        </ol>
       </PullRefresh>
     );
   }

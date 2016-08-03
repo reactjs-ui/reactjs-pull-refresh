@@ -5,6 +5,7 @@ import WebpackDevServer from 'webpack-dev-server';
 import opn from 'opn';
 import baseConfig from './webpack.config.babel';
 import exampleConfig from './webpack.config.example.babel';
+import exampleDistConfig from './webpack.config.example.dist.babel';
 
 const {webpackConfig, ip, port} = exampleConfig;
 const $ = gulpLoadPlugins();
@@ -43,6 +44,12 @@ gulp.task('sass', () => {
 //清理临时和打包目录
 gulp.task('clean', () => {
   return gulp.src(['dist'])
+    .pipe($.clean({force: true}));
+});
+
+//清理临时和打包目录
+gulp.task('clean:example', () => {
+  return gulp.src(['examples-dist'])
     .pipe($.clean({force: true}));
 });
 
@@ -105,12 +112,17 @@ gulp.task('example', () => {
     });
 });
 
-//打包后,启动服务
-gulp.task('reference', () => {
-  $.connect.server({
-    root: 'examples/reference',
-    port: 8001,
-    livereload: true
+//打包编译例子
+gulp.task('example:build', ['clean:example'], () => {
+  const compiler = webpack(exampleDistConfig);
+  // run webpack
+  compiler.run((err, stats) => {
+    if (err) {
+      throw new $.util.PluginError('example:build', err);
+    }
+    $.util.log('[example:build]', stats.toString({
+      colors: true
+    }));
   });
 });
 

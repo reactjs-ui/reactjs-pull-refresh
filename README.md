@@ -8,46 +8,161 @@ This is a react component for pull down refresh.
 npm install reactjs-pull-refresh --save
 ```
 
-## Usage
+## Example
 
-首先需要定制下拉样式，可参考例子中的实现。
-主要需要设置 rc-pull-ptr-icon 和 rc-pull-ptr-loading 的样式
+```
+npm install
+gulp example
+```
+
+http://localhost:9090
+
+
+## Online Example
+
+http://reactjs-ui.github.io/reactjs-pull-refresh/
+
+## Build Example
+第一次需要先执行前两步操作，再执行第三步。以后修改例子后，只需要执行第三步即可
+
+* 创建 gh-pages 分支，**在执行 git subtree add 命令之前，需确保 gh-pages 分支下至少存在一个文件**
+```
+git branch gh-pages
+git checkout gh-pages
+rm -rf *     //隐藏文件需要单独删除，结合命令 ls -a
+git add -A
+git commit -m "clear gh-page"
+git push --set-upstream origin gh-pages
+vim README.md
+//输入一些内容
+git add README.md
+git commit -m "README.md"
+git checkout master
+```
+
+* 把分支 gh-pages 添加到本地 subtree 中，执行该命令前，请确保 examples-dist 文件夹不存在
+
+```
+git subtree add --prefix=examples-dist origin gh-pages --squash
+```
+  
+* 生成在线 examples
+```
+gulp example:build
+git add -A examples-dist
+git commit -m "Update online examples"
+git subtree push --prefix=examples-dist origin gh-pages --squash
+git push
+```
+
+## Usage
 
 ```javascript
 import React, {Component, PropTypes} from 'react';
 import {render} from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import PullRefresh from '../src/scripts/index';
-import './sass/simple.scss';
+import './sass/example.scss';
+
+// 初始化 tapEvent 事件, 移动端
+injectTapEventPlugin();
 
 class PullRefreshSimple extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.loadingFunction.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: 20,
+      hasMore: true
+    };
+    this.refreshCallback = this.refreshCallback.bind(this);
+    this.loadMoreCallback = this.loadMoreCallback.bind(this);
+    this.ceshiTouchTap = this.ceshiTouchTap.bind(this);
   }
 
-  loadingFunction() {
+  refreshCallback() {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const result = true;
+        let result = false;
+        if (Math.random() > 0.2) {
+          result = true;
+        }
         if (result) {
-          resolve();
+          this.setState({
+            items: 20,
+            hasMore: true
+          }, () => {
+            resolve();
+          });
         } else {
           reject();
         }
-      }, 500);
+      }, 1000);
     }).then(() => {
       console.info('刷新成功！');
+    }, () => {
+      console.info('刷新失败！');
     });
   }
 
+  loadMoreCallback() {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let result = false;
+        if (Math.random() > 0.2) {
+          result = true;
+        }
+        if (result) {
+          this.setState({
+            items: this.state.items + 10,
+            hasMore: this.state.items <= 40
+          }, () => {
+            resolve();
+          });
+        } else {
+          reject();
+        }
+      }, 1000);
+    }).then(() => {
+      console.info('加载更多成功！');
+    }, () => {
+      console.info('加载更多失败！');
+    });
+  }
+
+  ceshiTouchTap(e) {
+    console.info('测试下拉刷新插件是否与 Tap 事件冲突');
+  }
+
   render() {
+    let contents = [];
+    const {items, hasMore} = this.state;
+
+    for (let i = items; i > 0; i--) {
+      if (i < 10) {
+        contents.push(<li key={i}><a href="http://www.sina.com">这里放置真实显示的DOM内容</a> {i}</li>);
+      } else {
+        contents.push(<li key={i} onTouchTap={this.ceshiTouchTap}>这里放置真实显示的DOM内容 {i}</li>);
+      }
+    }
+
+    const props = {
+      maxAmplitude: 80,
+      debounceTime: 30,
+      throttleTime: 100,
+      deceleration: 0.001,
+      refreshCallback: this.refreshCallback,
+      loadMoreCallback: this.loadMoreCallback,
+      hasMore
+    };
+
     return (
-      <div>
-        <PullRefresh loadingFunction={this.loadingFunction}
-                     distanceToRefresh={40}>
-          <p>Pull down to refresh!</p>
-        </PullRefresh>
-      </div>
+      <PullRefresh {...props}>
+        <ol className="example-list">
+          {contents.map((item) => {
+            return item;
+          })}
+        </ol>
+      </PullRefresh>
     );
   }
 }
@@ -62,30 +177,17 @@ render(
 
 | 选项        | 类型   |  功能  |
 | --------   | ----- | ---- |
-| loadingFunction |  PropTypes.func.isRequired | 加载完回调函数，需要 a promise |
-| icon |  PropTypes.element |  设置下滑时展示的内容 |
-| prefixCls |  PropTypes.string | 样式前缀 |
-| loading |  PropTypes.element |  设置加载时展示的内容或样式 |
-| disabled |  PropTypes.bool |  是否禁止向下滑动 |
-| className |  PropTypes.string | 自定义class样式 |
-| style |  PropTypes.object |  自定义 style 样式 |
-| contentClassName |  PropTypes.string |  内容自定义 class 样式 |
-| contentStyle |  PropTypes.object |  内容自定义 style 样式 |
-| distanceToRefresh |  PropTypes.number |  设置刷新所需的滑动距离，单位为像素 |
-| resistance |  PropTypes.number |  拖拽阻力系数，设置大于1表示实际拖拽效果变得缓慢，设置小于1，则加速拖拽效果 |
-| children |  PropTypes.any |  呈现的子元素 |
-| hammerOptions |  PropTypes.object |  hammer 组件选项 |
-| lockInTime |  PropTypes.number |  设置刷新完一次，等待的事件，默认为1秒 |
-| containerEl |  PropTypes.element |  渲染组件容器，可设为 document.body 等 |
-  
-## Example
-
-```
-npm install
-gulp example
-```
-
-http://localhost:9090
+| className | PropTypes.string| 自定义 className|
+| children | PropTypes.node| 待渲染的内容|
+| refreshCallback | PropTypes.func| 上拉刷新回调函数，需要是 promise 函数|
+| loadMoreCallback | PropTypes.func| 下拉加载更多回调函数，需要是 promise 函数|
+| hasMore | PropTypes.bool.isRequired| 是否有更多数据|
+| loadMoreThrottle | PropTypes.number| 设置加载更多，距离最底部临界值|
+| scrollBar | PropTypes.bool| 是否显示滚动条|
+| maxAmplitude | PropTypes.number| 设置上下滑动最大弹性振幅度，单位为像素，默认为 80 像素|
+| debounceTime | PropTypes.number| 设置防抖时间|
+| throttleTime | PropTypes.number| 设置滑动条移动频率，值越大，移动的越缓慢|
+| deceleration | PropTypes.number| 设置弹性滑动持续时间，即滑动停止时，弹性持续的时间，值越大，持续时间越短|
 
 ## Build
 
@@ -94,11 +196,6 @@ gulp build
 ```
 
 ## References
-
- * https://github.com/JedWatson/react-hammerjs
- * http://hammerjs.github.io/
- * https://github.com/apeatling/web-pull-to-refresh
- * https://github.com/react-component/m-pull-to-refresh
 
 
 ## Issue

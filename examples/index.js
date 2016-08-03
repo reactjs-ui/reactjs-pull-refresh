@@ -11,9 +11,6 @@ class Index extends Component {
           <li>
             <a href="./simple.html" target="_blank">基本用法</a>
           </li>
-          <li>
-            <a href="./customize.html" target="_blank">定制化加载效果</a>
-          </li>
         </ol>
       </div>
     );

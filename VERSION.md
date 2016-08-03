@@ -1,5 +1,12 @@
 # React Pull Refresh 更新日志
 
+## version 0.3.0  重新实现下拉刷新 react 组件(2016-8-3)
+
+* 下拉刷新基于 [reactjs-scroll](https://github.com/reactjs-ui/reactjs-scroll) 实现
+* 把下拉刷新和加载更多统一到一起实现
+* 增加了可配置参数选项
+* 完善文档和例子
+
 ## version 0.2.0  升级改进(2016-7-19)
 
 * 引入了 [react-hammerjs](https://github.com/JedWatson/react-hammerjs) 来更好的处理事件，以及组件 unmount 时卸载 hammer 实例
