@@ -67,6 +67,11 @@ gulp.task('webpack:build', () => {
   compiler(config, () => {
     //在回调函数中再压缩编译
     config.plugins.push(
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify('production')
+        }
+      }),
       new webpack.optimize.UglifyJsPlugin({
         compressor: {
           screw_ie8: true,

@@ -1,5 +1,10 @@
 # React Pull Refresh 更新日志
 
+## version 0.3.2  调整代码结构(2016-8-9)
+
+* 引入 reactjs-scroll 最新版本
+* reactjs-scroll 作为 externals 引入，打包时不再编译 reactjs-scroll
+
 ## version 0.3.0  重新实现下拉刷新 react 组件(2016-8-3)
 
 * 下拉刷新基于 [reactjs-scroll](https://github.com/reactjs-ui/reactjs-scroll) 实现

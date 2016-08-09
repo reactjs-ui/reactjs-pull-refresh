@@ -1,6 +1,6 @@
 {
   "name": "reactjs-pull-refresh",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": {
     "name": "Linder Wang",
     "email": "linder0209@126.com",
@@ -19,7 +19,7 @@
   "dependencies": {
     "react": "^15.3.0",
     "react-dom": "^15.3.0",
-    "reactjs-scroll": "^0.1.0"
+    "reactjs-scroll": "^0.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",

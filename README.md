@@ -189,6 +189,10 @@ render(
 | debounceTime | PropTypes.number| 设置防抖时间|
 | throttleTime | PropTypes.number| 设置滑动条移动频率，值越大，移动的越缓慢|
 | deceleration | PropTypes.number| 设置弹性滑动持续时间，即滑动停止时，弹性持续的时间，值越大，持续时间越短|
+| scrollSpeed   | PropTypes.number | 设置滚动加速度，值越大，滚动越快 |
+| thresholdOffset | PropTypes.number | 设置上下移动临界值，移动超过该值，则向上或向下滑动 |
+| durationSpeed | PropTypes.number | 滑动持续时间系数，系数越大，持续的时间短 |
+| easing  | PropTypes.string | 设置加速方式，默认为匀速，详情查看 https://github.com/component/ease |
 
 ## Build
 
