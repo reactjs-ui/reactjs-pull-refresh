@@ -1,5 +1,14 @@
 # React Pull Refresh 更新日志
 
+## version 0.4.1  (2016-8-23)
+
+* 增加参数 easing refresh 和 loadMore 来分别设置加速度，是否显示刷新和显示加载更多
+
+## version 0.3.3  (2016-8-9)
+
+* 引入 reactjs-scroll 最新版本
+* reactjs-scroll 作为 externals 引入，打包时不再编译 reactjs-scroll
+
 ## version 0.3.2  调整代码结构(2016-8-9)
 
 * 引入 reactjs-scroll 最新版本

@@ -55,6 +55,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		});
 /******/ 	};
 
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 
@@ -123,7 +132,9 @@ var PullRefresh = function () {
     this.container = container;
     this.ptrEl = ptrEl;
     this.moreEl = moreEl;
-    this.imgEl = ptrEl.querySelector('.rc-ptr-image');
+    if (ptrEl) {
+      this.imgEl = ptrEl.querySelector('.rc-ptr-image');
+    }
     this.scroll = scrollComponent.scroll;
     this.hasMore = hasMore;
 
@@ -155,47 +166,57 @@ var PullRefresh = function () {
       }
       var scroll = this.scroll;
       var top = -scroll.getScrollTop();
-      var style = this.ptrEl.style;
       var maxAmplitude = this.options.maxAmplitude;
-      if (top < 0 && top >= -maxAmplitude) {
-        style.webkitTransform = 'translate3d(0, ' + -top + 'px, 0)';
-        style.transform = 'translate3d(0, ' + -top + 'px, 0)';
-      } else {
-        style.webkitTransform = 'translate3d(0, 0, 0)';
-        style.transform = 'translate3d(0, 0, 0)';
-      }
-      if (top < -maxAmplitude / 2) {
-        //开启刷新
-        this.enableLoading = true;
-        this.imgEl.classList.add('rc-ptr-rotate');
-      } else {
-        this.enableLoading = false;
-        this.imgEl.classList.remove('rc-ptr-rotate');
+      var refresh = this.options.refresh;
+      var loadMore = this.options.loadMore;
+      if (refresh) {
+        var style = this.ptrEl.style;
+        if (top < 0 && top >= -maxAmplitude) {
+          style.webkitTransform = 'translate3d(0, ' + -top + 'px, 0)';
+          style.transform = 'translate3d(0, ' + -top + 'px, 0)';
+        } else {
+          style.webkitTransform = 'translate3d(0, 0, 0)';
+          style.transform = 'translate3d(0, 0, 0)';
+        }
+        if (top < -maxAmplitude / 2) {
+          //开启刷新
+          this.enableLoading = true;
+          this.imgEl.classList.add('rc-ptr-rotate');
+        } else {
+          this.enableLoading = false;
+          this.imgEl.classList.remove('rc-ptr-rotate');
+        }
       }
 
       //加载更多
-      var height = scroll.getScrollHeight();
-      var veiwHeight = scroll.getScrollViewHeight();
-      var loadMoreThrottle = this.options.loadMoreThrottle;
-      if (veiwHeight + top - height > loadMoreThrottle) {
-        this.enableMore = true;
-      } else {
-        this.enableMore = false;
+      if (loadMore) {
+        var height = scroll.getScrollHeight();
+        var veiwHeight = scroll.getScrollViewHeight();
+        var loadMoreThrottle = this.options.loadMoreThrottle;
+        if (veiwHeight + top - height > loadMoreThrottle) {
+          this.enableMore = true;
+        } else {
+          this.enableMore = false;
+        }
       }
     }
   }, {
     key: 'ontouchend',
     value: function ontouchend(e) {
       var top = this.scroll.getScrollTop();
-      if (top > 0) {
-        //向上滑动，刷新
-        this.refresh(e);
-      } else {
-        this.resetPtr(false);
+      var refresh = this.options.refresh;
+      var loadMore = this.options.loadMore;
+      if (refresh) {
+        if (top > 0) {
+          //向上滑动，刷新
+          this.refresh(e);
+        } else {
+          this.resetPtr(false);
+        }
       }
 
       //向下滑动，并且有更多数据则加载更多
-      if (top < 0 && this.hasMore) {
+      if (loadMore && top < 0 && this.hasMore) {
         this.loadMore(e);
       }
     }
@@ -420,6 +441,8 @@ var ReactPullRefresh = function (_Component) {
       var hasMore = _props.hasMore;
       var maxAmplitude = _props.maxAmplitude;
       var loadMoreThrottle = _props.loadMoreThrottle;
+      var refresh = _props.refresh;
+      var loadMore = _props.loadMore;
 
       this.pullRefresh = new _PullRefresh2.default({
         container: container,
@@ -430,7 +453,9 @@ var ReactPullRefresh = function (_Component) {
         refreshCallback: refreshCallback,
         loadMoreCallback: loadMoreCallback,
         maxAmplitude: maxAmplitude,
-        loadMoreThrottle: loadMoreThrottle
+        loadMoreThrottle: loadMoreThrottle,
+        refresh: refresh,
+        loadMore: loadMore
       });
     }
   }, {
@@ -460,6 +485,8 @@ var ReactPullRefresh = function (_Component) {
       var thresholdOffset = _props2.thresholdOffset;
       var durationSpeed = _props2.durationSpeed;
       var easing = _props2.easing;
+      var refresh = _props2.refresh;
+      var loadMore = _props2.loadMore;
 
 
       var scrollProp = {
@@ -476,7 +503,7 @@ var ReactPullRefresh = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'rc-pull-refresh ' + className, ref: 'container' },
-        _react2.default.createElement(
+        refresh ? _react2.default.createElement(
           'div',
           { ref: 'ptrEl', className: 'rc-ptr-box' },
           _react2.default.createElement(
@@ -484,13 +511,13 @@ var ReactPullRefresh = function (_Component) {
             { className: 'rc-ptr-container' },
             _react2.default.createElement('div', { className: 'rc-ptr-image' })
           )
-        ),
+        ) : null,
         _react2.default.createElement(
           _reactjsScroll2.default,
           _extends({ ref: 'scrollComponent' }, scrollProp),
           children
         ),
-        _react2.default.createElement('div', { className: 'rc-load-more', ref: 'moreEl' })
+        loadMore ? _react2.default.createElement('div', { className: 'rc-load-more', ref: 'moreEl' }) : null
       );
     }
   }]);
@@ -514,10 +541,13 @@ ReactPullRefresh.propTypes = {
   scrollSpeed: _react.PropTypes.number, // 设置滚动加速度，值越大，滚动越快
   thresholdOffset: _react.PropTypes.number, //设置上下移动临界值，移动超过该值，则向上或向下滑动
   durationSpeed: _react.PropTypes.number, //滑动持续时间系数，系数越大，持续的时间短
-  easing: _react.PropTypes.string //设置加速方式，默认为匀速，详情查看 https://github.com/component/ease
-};
+  easing: _react.PropTypes.string, //设置加速方式，默认为匀速，详情查看 https://github.com/component/ease
+  refresh: _react.PropTypes.bool, //是否显示刷新
+  loadMore: _react.PropTypes.bool };
 ReactPullRefresh.defaultProps = {
-  className: ''
+  className: '',
+  refresh: true,
+  loadMore: true
 };
 exports.default = ReactPullRefresh;
 

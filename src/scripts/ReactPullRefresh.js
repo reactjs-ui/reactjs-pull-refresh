@@ -21,17 +21,24 @@ class ReactPullRefresh extends Component {
     scrollSpeed: PropTypes.number, // 设置滚动加速度，值越大，滚动越快
     thresholdOffset: PropTypes.number, //设置上下移动临界值，移动超过该值，则向上或向下滑动
     durationSpeed: PropTypes.number, //滑动持续时间系数，系数越大，持续的时间短
-    easing: PropTypes.string //设置加速方式，默认为匀速，详情查看 https://github.com/component/ease
+    easing: PropTypes.string, //设置加速方式，默认为匀速，详情查看 https://github.com/component/ease
+    refresh: PropTypes.bool, //是否显示刷新
+    loadMore: PropTypes.bool, //是否加载更多
   };
 
   static defaultProps = {
-    className: ''
+    className: '',
+    refresh: true,
+    loadMore: true
   };
 
   componentDidMount() {
     //初始化 Scroll 实例
     const {container, ptrEl, scrollComponent, moreEl} = this.refs;
-    const {refreshCallback, loadMoreCallback, hasMore, maxAmplitude, loadMoreThrottle} = this.props;
+    const {
+      refreshCallback, loadMoreCallback, hasMore,
+      maxAmplitude, loadMoreThrottle, refresh, loadMore
+    } = this.props;
     this.pullRefresh = new PullRefresh({
       container,
       ptrEl,
@@ -41,7 +48,9 @@ class ReactPullRefresh extends Component {
       refreshCallback,
       loadMoreCallback,
       maxAmplitude,
-      loadMoreThrottle
+      loadMoreThrottle,
+      refresh,
+      loadMore
     });
   }
 
@@ -57,7 +66,7 @@ class ReactPullRefresh extends Component {
   render() {
     const {
       className, children, scrollBar, maxAmplitude, debounceTime, throttleTime, deceleration,
-      scrollSpeed, thresholdOffset, durationSpeed, easing
+      scrollSpeed, thresholdOffset, durationSpeed, easing, refresh, loadMore
     } = this.props;
 
     const scrollProp = {
@@ -73,15 +82,20 @@ class ReactPullRefresh extends Component {
     };
     return (
       <div className={`rc-pull-refresh ${className}`} ref="container">
-        <div ref="ptrEl" className="rc-ptr-box">
+        {refresh ? (<div ref="ptrEl" className="rc-ptr-box">
           <div className="rc-ptr-container">
             <div className="rc-ptr-image"></div>
           </div>
-        </div>
+        </div>) : null}
+
         <Scroll ref="scrollComponent" {...scrollProp}>
           {children}
         </Scroll>
-        <div className="rc-load-more" ref="moreEl"></div>
+        {
+          loadMore ? (
+            <div className="rc-load-more" ref="moreEl"></div>
+          ) : null
+        }
       </div>
     );
   }

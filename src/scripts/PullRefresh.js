@@ -1,4 +1,3 @@
-
 // Pull Refresh 核心实现
 class PullRefresh {
   //默认属性
@@ -21,7 +20,9 @@ class PullRefresh {
     this.container = container;
     this.ptrEl = ptrEl;
     this.moreEl = moreEl;
-    this.imgEl = ptrEl.querySelector('.rc-ptr-image');
+    if (ptrEl) {
+      this.imgEl = ptrEl.querySelector('.rc-ptr-image');
+    }
     this.scroll = scrollComponent.scroll;
     this.hasMore = hasMore;
 
@@ -46,47 +47,56 @@ class PullRefresh {
     }
     const scroll = this.scroll;
     let top = -scroll.getScrollTop();
-    const style = this.ptrEl.style;
     const maxAmplitude = this.options.maxAmplitude;
-    if (top < 0 && top >= -maxAmplitude) {
-      style.webkitTransform = `translate3d(0, ${-top}px, 0)`;
-      style.transform = `translate3d(0, ${-top}px, 0)`;
-    } else {
-      style.webkitTransform = 'translate3d(0, 0, 0)';
-      style.transform = 'translate3d(0, 0, 0)';
-    }
-    if (top < -maxAmplitude / 2) {//开启刷新
-      this.enableLoading = true;
-      this.imgEl.classList.add('rc-ptr-rotate');
-    } else {
-      this.enableLoading = false;
-      this.imgEl.classList.remove('rc-ptr-rotate')
+    const refresh = this.options.refresh;
+    const loadMore = this.options.loadMore;
+    if (refresh) {
+      const style = this.ptrEl.style;
+      if (top < 0 && top >= -maxAmplitude) {
+        style.webkitTransform = `translate3d(0, ${-top}px, 0)`;
+        style.transform = `translate3d(0, ${-top}px, 0)`;
+      } else {
+        style.webkitTransform = 'translate3d(0, 0, 0)';
+        style.transform = 'translate3d(0, 0, 0)';
+      }
+      if (top < -maxAmplitude / 2) {//开启刷新
+        this.enableLoading = true;
+        this.imgEl.classList.add('rc-ptr-rotate');
+      } else {
+        this.enableLoading = false;
+        this.imgEl.classList.remove('rc-ptr-rotate')
+      }
     }
 
     //加载更多
-    const height = scroll.getScrollHeight();
-    const veiwHeight = scroll.getScrollViewHeight();
-    const loadMoreThrottle = this.options.loadMoreThrottle;
-    if (veiwHeight + top - height > loadMoreThrottle) {
-      this.enableMore = true;
-    } else {
-      this.enableMore = false;
+    if (loadMore) {
+      const height = scroll.getScrollHeight();
+      const veiwHeight = scroll.getScrollViewHeight();
+      const loadMoreThrottle = this.options.loadMoreThrottle;
+      if (veiwHeight + top - height > loadMoreThrottle) {
+        this.enableMore = true;
+      } else {
+        this.enableMore = false;
+      }
     }
   }
 
   ontouchend(e) {
     const top = this.scroll.getScrollTop();
-    if (top > 0) { //向上滑动，刷新
-      this.refresh(e);
-    } else {
-      this.resetPtr(false);
+    const refresh = this.options.refresh;
+    const loadMore = this.options.loadMore;
+    if (refresh) {
+      if (top > 0) { //向上滑动，刷新
+        this.refresh(e);
+      } else {
+        this.resetPtr(false);
+      }
     }
 
     //向下滑动，并且有更多数据则加载更多
-    if (top < 0 && this.hasMore) {
+    if (loadMore && top < 0 && this.hasMore) {
       this.loadMore(e);
     }
-
   }
 
   refresh(e) {

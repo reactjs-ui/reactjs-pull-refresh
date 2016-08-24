@@ -193,6 +193,8 @@ render(
 | thresholdOffset | PropTypes.number | 设置上下移动临界值，移动超过该值，则向上或向下滑动 |
 | durationSpeed | PropTypes.number | 滑动持续时间系数，系数越大，持续的时间短 |
 | easing  | PropTypes.string | 设置加速方式，默认为匀速，详情查看 https://github.com/component/ease |
+| refresh  | PropTypes.bool | 是否显示刷新 |
+| loadMore  | PropTypes.bool | 是否加载更多 |
 
 ## Build
 
@@ -200,8 +202,9 @@ render(
 gulp build
 ```
 
-## References
+## More React Component
 
+* [reactjs-scroll](https://www.npmjs.com/package/reactjs-scroll) 
 
 ## Issue
 

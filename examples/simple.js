@@ -11,7 +11,7 @@ class PullRefreshSimple extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: 20,
+      items: 2000,
       hasMore: true
     };
     this.refreshCallback = this.refreshCallback.bind(this);
@@ -92,7 +92,9 @@ class PullRefreshSimple extends Component {
       deceleration: 0.001,
       refreshCallback: this.refreshCallback,
       loadMoreCallback: this.loadMoreCallback,
-      hasMore
+      hasMore,
+      refresh: true,
+      loadMore: true
     };
 
     return (
