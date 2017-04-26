@@ -75,12 +75,9 @@ class PullRefreshSimple extends Component {
       items: 20,
       hasMore: true
     };
-    this.refreshCallback = this.refreshCallback.bind(this);
-    this.loadMoreCallback = this.loadMoreCallback.bind(this);
-    this.ceshiTouchTap = this.ceshiTouchTap.bind(this);
   }
 
-  refreshCallback() {
+  refreshCallback = () => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         let result = false;
@@ -103,9 +100,9 @@ class PullRefreshSimple extends Component {
     }, () => {
       console.info('刷新失败！');
     });
-  }
+  };
 
-  loadMoreCallback() {
+  loadMoreCallback = () => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         let result = false;
@@ -128,11 +125,11 @@ class PullRefreshSimple extends Component {
     }, () => {
       console.info('加载更多失败！');
     });
-  }
+  };
 
-  ceshiTouchTap(e) {
+  handleTouchTap = (e) => {
     console.info('测试下拉刷新插件是否与 Tap 事件冲突');
-  }
+  };
 
   render() {
     let contents = [];
@@ -142,7 +139,7 @@ class PullRefreshSimple extends Component {
       if (i < 10) {
         contents.push(<li key={i}><a href="http://www.sina.com">这里放置真实显示的DOM内容</a> {i}</li>);
       } else {
-        contents.push(<li key={i} onTouchTap={this.ceshiTouchTap}>这里放置真实显示的DOM内容 {i}</li>);
+        contents.push(<li key={i} onTouchTap={this.handleTouchTap}>这里放置真实显示的DOM内容 {i}</li>);
       }
     }
 
@@ -200,6 +197,12 @@ render(
 
 ```
 gulp build
+```
+
+## Publish
+
+```
+npm publish
 ```
 
 ## More React Component
