@@ -6,22 +6,11 @@ import autoprefixer from 'autoprefixer';
 
 const appPath = path.resolve(__dirname, 'examples');
 
-let webpackConfig = {
+const webpackConfig = {
   devtool: 'source-map', //生成 source map文件
   resolve: {
-    root: [appPath], // 设置要加载模块根路径，该路径必须是绝对路径
     //自动扩展文件后缀名
-    extensions: ['', '.js', '.jsx', '.css', '.json']
-  },
-
-  postcss () {
-    return {
-      defaults: [precss, autoprefixer],
-      cleaner: [autoprefixer({
-        flexbox: 'no-2009',
-        browsers: ['last 2 version', 'chrome >=30', 'Android >= 4.3']
-      })]
-    };
+    extensions: ['.js', '.jsx', '.css', '.json']
   },
 
   // 入口文件 让webpack用哪个文件作为项目的入口
@@ -40,13 +29,12 @@ let webpackConfig = {
   module: {
     loaders: [
       {
-        test: /\.jsx?$/,
-        loader: 'babel', // 'babel-loader' is also a legal name to reference
+        test: /\.js$/,
+        loader: 'babel-loader',
         exclude: /node_modules/,
-        cacheDirectory: true // 开启缓存
       },
       {
-        test: /\.scss/,
+        test: /\.scss$/,
         loader: 'style-loader!css-loader!postcss-loader?pack=cleaner!sass-loader?outputStyle=expanded'
       }
     ]
@@ -59,9 +47,6 @@ let webpackConfig = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    // http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
-    // 相当于命令参数 --optimize-dedupe 消除冗余的或重复的代码
-    new webpack.optimize.DedupePlugin(),
     // http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
     // 相当于命令参数 --optimize-minimize
     new webpack.optimize.UglifyJsPlugin({
@@ -75,13 +60,27 @@ let webpackConfig = {
     //用来优化生成的代码 chunk,合并相同的代码
     new webpack.optimize.AggressiveMergingPlugin(),
     //用来保证编译过程不出错
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        postcss () {
+          return {
+            defaults: [precss, autoprefixer],
+            cleaner: [autoprefixer({
+              flexbox: 'no-2009',
+              browsers: ['Chrome >= 35', 'Firefox >= 38', 'Edge >= 12',
+                'Explorer >= 8', 'Android >= 4.3', 'iOS >=8', 'Safari >= 8']
+            })]
+          };
+        },
+      }
+    })
   ]
 };
 
 //创建 HtmlWebpackPlugin 的实例
 // https://www.npmjs.com/package/html-webpack-plugin
-const entry = webpackConfig.entry;
+const {entry} = webpackConfig;
 
 // 为 HtmlwebpackPlugin 设置配置项，与 entry 键对应，根据需要设置其参数值
 const htmlwebpackPluginConfig = {
@@ -93,7 +92,7 @@ const htmlwebpackPluginConfig = {
   }
 };
 
-for (let key in entry) {
+for (const key in entry) {
   if (entry.hasOwnProperty(key) && key !== 'vendors') {
     webpackConfig.plugins.push(
       new HtmlwebpackPlugin({

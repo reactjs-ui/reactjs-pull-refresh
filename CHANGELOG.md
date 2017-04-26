@@ -1,5 +1,12 @@
 # React Pull Refresh 更新日志
 
+## version 0.5.0  (2017-4-26)
+
+* 升级更新 node 依赖包
+* 升级到 webpack 2 后修改打包配置
+* 升级 eslint 检测代码后，修改部分代码检测规则
+* 升级 react 15.5.4 后单独引入 prop-types 
+
 ## version 0.4.1  (2016-8-23)
 
 * 增加参数 easing refresh 和 loadMore 来分别设置加速度，是否显示刷新和显示加载更多

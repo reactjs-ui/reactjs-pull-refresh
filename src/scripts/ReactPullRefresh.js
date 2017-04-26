@@ -1,4 +1,5 @@
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Scroll from 'reactjs-scroll';
 import PullRefresh from './PullRefresh';
 import '../sass/pull-refresh.scss';

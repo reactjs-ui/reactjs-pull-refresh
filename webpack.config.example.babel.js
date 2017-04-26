@@ -12,20 +12,15 @@ const webpackDevServer = `webpack-dev-server/client?http://${ip}:${port}`;
 
 const appPath = path.resolve(__dirname, 'examples');
 
-let webpackConfig = {
-  // eslint 配置
-  eslint: {
-    emitError: true, // 验证失败，终止
-    configFile: '.eslintrc'
-  },
+const webpackConfig = {
   cache: true,
-  debug: true,
   devtool: 'source-map', //生成 source map文件
   stats: {
     colors: true,
     reasons: true
   },
   devServer: {
+    //指定根目录路径，比如访问 eruda.min.js 时，只需 http://localhost:9090/eruda.min.js 即可
     contentBase: './examples',
     historyApiFallback: true,
     hot: true,
@@ -38,21 +33,9 @@ let webpackConfig = {
     },
     quiet: false, // 设为true，不把任何信息输出到控制台
   },
-
-  postcss () {
-    return {
-      defaults: [precss, autoprefixer],
-      cleaner: [autoprefixer({
-        flexbox: 'no-2009',
-        browsers: ['last 2 version', 'chrome >=30', 'Android >= 4.3']
-      })]
-    };
-  },
-
   resolve: {
-    root: [appPath], // 设置要加载模块根路径，该路径必须是绝对路径
     //自动扩展文件后缀名
-    extensions: ['', '.js', '.jsx', '.css']
+    extensions: ['.js', '.jsx', '.css']
   },
 
   // 入口文件 让webpack用哪个文件作为项目的入口
@@ -69,25 +52,24 @@ let webpackConfig = {
   },
 
   module: {
-    // https://github.com/MoOx/eslint-loader
-    preLoaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules.*/,
-      loader: 'eslint'
-    }],
     loaders: [
       {
-        test: /\.jsx?$/,
-        loader: 'babel', // 'babel-loader' is also a legal name to reference
+        enforce: 'pre',
+        test: /\.js$/,
         exclude: /node_modules/,
-        cacheDirectory: true // 开启缓存
+        loader: 'eslint-loader'
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader!postcss-loader?pack=cleaner'
       },
       {
-        test: /\.scss/,
+        test: /\.scss$/,
         loader: 'style-loader!css-loader!postcss-loader?pack=cleaner!sass-loader?outputStyle=expanded'
       }
     ]
@@ -95,13 +77,33 @@ let webpackConfig = {
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(), // 热部署替换模块
-    new webpack.NoErrorsPlugin() //
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      debug: true,
+      options: {
+        // eslint 配置
+        eslint: {
+          emitError: true, // 验证失败，终止
+          configFile: '.eslintrc'
+        },
+        postcss () {
+          return {
+            defaults: [precss, autoprefixer],
+            cleaner: [autoprefixer({
+              flexbox: 'no-2009',
+              browsers: ['Chrome >= 35', 'Firefox >= 38', 'Edge >= 12',
+                'Explorer >= 8', 'Android >= 4.3', 'iOS >=8', 'Safari >= 8']
+            })]
+          };
+        },
+      }
+    })
   ]
 };
 
 //创建 HtmlWebpackPlugin 的实例
 // https://www.npmjs.com/package/html-webpack-plugin
-const entry = webpackConfig.entry;
+const {entry} = webpackConfig;
 
 // 为 HtmlwebpackPlugin 设置配置项，与 entry 键对应，根据需要设置其参数值
 const htmlwebpackPluginConfig = {
@@ -113,7 +115,7 @@ const htmlwebpackPluginConfig = {
   }
 };
 
-for (let key in entry) {
+for (const key in entry) {
   if (entry.hasOwnProperty(key) && key !== 'vendors') {
     webpackConfig.plugins.push(
       new HtmlwebpackPlugin({

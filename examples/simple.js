@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {render} from 'react-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import PullRefresh from '../src/scripts/index';
@@ -14,12 +14,9 @@ class PullRefreshSimple extends Component {
       items: 2000,
       hasMore: true
     };
-    this.refreshCallback = this.refreshCallback.bind(this);
-    this.loadMoreCallback = this.loadMoreCallback.bind(this);
-    this.ceshiTouchTap = this.ceshiTouchTap.bind(this);
   }
 
-  refreshCallback() {
+  refreshCallback = () => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         let result = false;
@@ -34,7 +31,7 @@ class PullRefreshSimple extends Component {
             resolve();
           });
         } else {
-          reject();
+          reject(new Error('错误'));
         }
       }, 1000);
     }).then(() => {
@@ -42,9 +39,9 @@ class PullRefreshSimple extends Component {
     }, () => {
       console.info('刷新失败！');
     });
-  }
+  };
 
-  loadMoreCallback() {
+  loadMoreCallback = () => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         let result = false;
@@ -59,7 +56,7 @@ class PullRefreshSimple extends Component {
             resolve();
           });
         } else {
-          reject();
+          reject(new Error('错误'));
         }
       }, 1000);
     }).then(() => {
@@ -69,19 +66,19 @@ class PullRefreshSimple extends Component {
     });
   }
 
-  ceshiTouchTap(e) {
+  handleTouchTap = (e) => {
     console.info('测试下拉刷新插件是否与 Tap 事件冲突');
-  }
+  };
 
   render() {
-    let contents = [];
+    const contents = [];
     const {items, hasMore} = this.state;
 
     for (let i = items; i > 0; i--) {
       if (i < 10) {
         contents.push(<li key={i}><a href="http://www.sina.com">这里放置真实显示的DOM内容</a> {i}</li>);
       } else {
-        contents.push(<li key={i} onTouchTap={this.ceshiTouchTap}>这里放置真实显示的DOM内容 {i}</li>);
+        contents.push(<li key={i} onTouchTap={this.handleTouchTap}>这里放置真实显示的DOM内容 {i}</li>);
       }
     }
 
@@ -92,9 +89,7 @@ class PullRefreshSimple extends Component {
       deceleration: 0.001,
       refreshCallback: this.refreshCallback,
       loadMoreCallback: this.loadMoreCallback,
-      hasMore,
-      refresh: true,
-      loadMore: true
+      hasMore
     };
 
     return (

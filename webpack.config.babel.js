@@ -5,25 +5,10 @@ import autoprefixer from 'autoprefixer';
 
 const appPath = path.resolve(__dirname, 'src');
 
-let webpackConfig = {
-  // eslint 配置
-  eslint: {
-    emitError: true, // 验证失败，终止
-    configFile: '.eslintrc'
-  },
-  postcss () {
-    return {
-      defaults: [precss, autoprefixer],
-      cleaner: [autoprefixer({
-        flexbox: 'no-2009',
-        browsers: ['last 2 version', 'chrome >=30', 'Android >= 4.3']
-      })]
-    };
-  },
+const webpackConfig = {
   resolve: {
-    root: [appPath], // 设置要加载模块根路径，该路径必须是绝对路径
     //自动扩展文件后缀名
-    extensions: ['', '.js', '.jsx', '.scss']
+    extensions: ['.js', '.jsx', '.scss']
   },
   entry: {
     index: ['./src/scripts/index.js']
@@ -31,6 +16,7 @@ let webpackConfig = {
   externals: {
     react: 'react',
     'react-dom': 'react-dom',
+    'prop-types': 'prop-types',
     'reactjs-scroll': 'reactjs-scroll'
   },
   output: {
@@ -41,17 +27,17 @@ let webpackConfig = {
     libraryTarget: 'umd'
   },
   module: {
-    // https://github.com/MoOx/eslint-loader
-    preLoaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules.*/,
-      loader: 'eslint'
-    }],
-
     loaders: [
+      // https://github.com/MoOx/eslint-loader
       {
-        test: /\.jsx?$/,
-        loader: 'babel', // 'babel-loader' is also a legal name to reference
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader'
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
         exclude: /(node_modules)/
       },
       {
@@ -59,21 +45,37 @@ let webpackConfig = {
         loader: 'style-loader!css-loader!postcss-loader?pack=cleaner'
       },
       {
-        test: /\.scss/,
+        test: /\.scss$/,
         loader: 'style-loader!css-loader!postcss-loader?pack=cleaner!sass-loader?outputStyle=expanded'
       }
     ]
   },
 
   plugins: [
-    // http://webpack.github.io/docs/list-of-plugins.html#dedupeplugin
-    // 相当于命令参数 --optimize-dedupe 消除冗余的或重复的代码
-    new webpack.optimize.DedupePlugin(),
     // http://webpack.github.io/docs/list-of-plugins.html#uglifyjsplugin
     //用来优化生成的代码 chunk,合并相同的代码
     new webpack.optimize.AggressiveMergingPlugin(),
     //用来保证编译过程不出错
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        // eslint 配置
+        eslint: {
+          emitError: true, // 验证失败，终止
+          configFile: '.eslintrc'
+        },
+        postcss () {
+          return {
+            defaults: [precss, autoprefixer],
+            cleaner: [autoprefixer({
+              flexbox: 'no-2009',
+              browsers: ['Chrome >= 35', 'Firefox >= 38', 'Edge >= 12',
+                'Explorer >= 8', 'Android >= 4.3', 'iOS >=8', 'Safari >= 8']
+            })]
+          };
+        },
+      }
+    })
   ]
 };
 

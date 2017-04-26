@@ -8,7 +8,7 @@ class PullRefresh {
   };
 
   constructor(options) {
-    let _options = {...options};
+    const _options = {...options};
     Object.keys(_options).forEach((item) => {
       if (_options[item] === undefined) {
         delete _options[item];
@@ -45,13 +45,11 @@ class PullRefresh {
     if (this.loading) {
       return;
     }
-    const scroll = this.scroll;
-    let top = -scroll.getScrollTop();
-    const maxAmplitude = this.options.maxAmplitude;
-    const refresh = this.options.refresh;
-    const loadMore = this.options.loadMore;
+    const {scroll} = this;
+    const top = -scroll.getScrollTop();
+    const {maxAmplitude, refresh, loadMore} = this.options;
     if (refresh) {
-      const style = this.ptrEl.style;
+      const {style} = this.ptrEl;
       if (top < 0 && top >= -maxAmplitude) {
         style.webkitTransform = `translate3d(0, ${-top}px, 0)`;
         style.transform = `translate3d(0, ${-top}px, 0)`;
@@ -59,7 +57,7 @@ class PullRefresh {
         style.webkitTransform = 'translate3d(0, 0, 0)';
         style.transform = 'translate3d(0, 0, 0)';
       }
-      if (top < -maxAmplitude / 2) {//开启刷新
+      if (top < -maxAmplitude / 2) { // 开启刷新
         this.enableLoading = true;
         this.imgEl.classList.add('rc-ptr-rotate');
       } else {
@@ -72,7 +70,7 @@ class PullRefresh {
     if (loadMore) {
       const height = scroll.getScrollHeight();
       const veiwHeight = scroll.getScrollViewHeight();
-      const loadMoreThrottle = this.options.loadMoreThrottle;
+      const {loadMoreThrottle} = this.options;
       if (veiwHeight + top - height > loadMoreThrottle) {
         this.enableMore = true;
       } else {
@@ -83,8 +81,7 @@ class PullRefresh {
 
   ontouchend(e) {
     const top = this.scroll.getScrollTop();
-    const refresh = this.options.refresh;
-    const loadMore = this.options.loadMore;
+    const {refresh, loadMore} = this.options;
     if (refresh) {
       if (top > 0) { //向上滑动，刷新
         this.refresh(e);
@@ -113,15 +110,15 @@ class PullRefresh {
     }
     this.loading = true;
 
-    const maxAmplitude = this.options.maxAmplitude;
-    const style = this.ptrEl.style;
+    const {maxAmplitude} = this.options;
+    const {style} = this.ptrEl;
     style.transition = 'transform .2s linear';
     style.webkitTransition = '-webkit-transform .2s linear';
     style.webkitTransform = `translate3d(0, ${maxAmplitude / 2}px, 0)`;
     style.transform = `translate3d(0, ${maxAmplitude / 2}px, 0)`;
     this.imgEl.classList.add('rc-ptr-loading');
 
-    const options = this.options;
+    const {options} = this;
     const {lockInTime, refreshCallback} = options;
     if (refreshCallback && typeof refreshCallback === 'function') {
       if (lockInTime > 0) {
@@ -139,7 +136,7 @@ class PullRefresh {
     this.enableLoading = false;
     this.loading = false;
     this.imgEl.className = 'rc-ptr-image';
-    const style = this.ptrEl.style;
+    const {style} = this.ptrEl;
     style.transition = '';
     style.webkitTransition = '';
     style.webkitTransform = 'translate3d(0, 0, 0)';
@@ -163,11 +160,11 @@ class PullRefresh {
       e.stopImmediatePropagation();
     }
 
-    const scroll = this.scroll;
+    const {scroll} = this;
     const height = scroll.getScrollHeight();
     const top = -scroll.getScrollTop();
     const veiwHeight = scroll.getScrollViewHeight();
-    const maxAmplitude = this.options.maxAmplitude;
+    const {maxAmplitude} = this.options;
     const maxTop = height - veiwHeight + maxAmplitude;
 
     if (maxTop > top) {
@@ -183,7 +180,7 @@ class PullRefresh {
     this.moreEl.style.visibility = 'visible';
     this.loading = true;
 
-    const options = this.options;
+    const {options} = this;
     const {lockInTime, loadMoreCallback} = options;
     if (loadMoreCallback && typeof loadMoreCallback === 'function') {
       if (lockInTime > 0) {

@@ -212,4 +212,4 @@ https://github.com/reactjs-ui/reactjs-pull-refresh/issues
 
 ## Version
 
-Please view [here](./VERSION.md)
+Please view [here](./CHANGELOG.md)
