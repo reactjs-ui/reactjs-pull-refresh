@@ -36,8 +36,9 @@ class PullRefreshSimple extends Component {
       }, 1000);
     }).then(() => {
       console.info('刷新成功！');
-    }, () => {
+    }, (error) => {
       console.info('刷新失败！');
+      Promise.error(error);
     });
   };
 
@@ -61,8 +62,9 @@ class PullRefreshSimple extends Component {
       }, 1000);
     }).then(() => {
       console.info('加载更多成功！');
-    }, () => {
+    }, (error) => {
       console.info('加载更多失败！');
+      Promise.error(error);
     });
   }
 
