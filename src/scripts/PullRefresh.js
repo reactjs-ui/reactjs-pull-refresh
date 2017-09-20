@@ -196,6 +196,7 @@ class PullRefresh {
   resetMore() {
     this.moreEl.style.visibility = 'hidden';
     this.loading = false;
+    this.enableMore = false;
     this.scroll.refresh();
 
     //打印日志，测试用
